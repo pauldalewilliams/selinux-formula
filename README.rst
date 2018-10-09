@@ -12,12 +12,12 @@ NOTICE BEFORE YOU USE
 TODO
 ====
 
-* configure local pre-commit hooks (code syntax check based on file extension, check for ugly *utf-8 mac os white space*)
+* Add setroubleshoot support
 
 Instructions
 ============
 
-1. Add this repository as a `GitFS <http://docs.saltstack.com/topics/tutorials/gitfs.html>`_ backend in your Salt master config.
+1. Fork this repository and then add your fork as a `GitFS <http://docs.saltstack.com/topics/tutorials/gitfs.html>`_ backend in your Salt master config.
 
 2. Configure your Pillar top file (``/srv/pillar/top.sls``), see pillar.example
 
@@ -58,7 +58,7 @@ Salt Compatibility
 
 Tested with:
 
-* 2014.1.x
+* 2018.3.x
 
 OS Compatibility
 ================
