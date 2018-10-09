@@ -1,27 +1,50 @@
-{% set selinux  = pillar.get('selinux', {}) -%}
-
 {% for file, config in salt['pillar.get']('selinux:fcontext', {}).items() %}
-{% set parameters = [] %}
-{% if 'type' in config %}
-  {% do parameters.append('-t ' + config.type) %}
-{% endif %}
-{% if 'user' in config %}
-  {% do parameters.append('-s ' + config.user) %}
-{% endif %}
 selinux_fcontext_{{ file }}:
-  cmd:
-    - run
-    - name: semanage fcontext -a {{ ' '.join(parameters) }} "{{ file }}"
+  selinux.fcontext_policy_present:
+    - name: {{ file }}
+    - sel_type: {{ config['sel_type'] }}
+    {% if 'filetype' in config -%}
+    - filetype: {{ config['filetype'] }}
+    {%- endif %}
+    {% if 'sel_user' in config -%}
+    - sel_user: {{ config['sel_user'] }}
+    {%- endif %}
+    {% if 'sel_level' in config -%}
+    - sel_level: {{ config['sel_level'] }}
+    {%- endif %}
     - require:
-      - pkg: selinux
+      - pkg: selinux_pkg_installed
 {% endfor %}
 
-{% for file in salt['pillar.get']('selinux:fcontext_absent', {}) %}
-selinux_fcontext_{{ file }}_absent:
-  cmd:
-    - run
-    - name: semanage fcontext -d "{{ file }}"
+
+{% for file, config in salt['pillar.get']('selinux:fcontext_applied', {}).items() %}
+selinux_fcontext_applied_{{ file }}:
+  selinux.fcontext_policy_applied:
+    - name: {{ file }}
+    {% if 'recursive' in config -%}
+    - recursive: {{ config['recursive'] }}
+    {%- endif %}
     - require:
-      - pkg: selinux
-    - unless: if (semanage fcontext --list | grep -q "^{{ file }} "); then /bin/false; else /bin/true; fi
+      - pkg: selinux_pkg_installed
+{% endfor %}
+
+
+{% for file, config in salt['pillar.get']('selinux:fcontext_absent', {}).items() %}
+selinux_fcontext_{{ file }}_absent:
+  selinux.fcontext_policy_absent:
+    - name: {{ file }}
+    {% if 'filetype' in config -%}
+    - filetype: {{ config['filetype'] }}
+    {%- endif %}
+    {% if 'sel_type' in config -%}
+    - sel_type: {{ config['sel_type'] }}
+    {%- endif %}
+    {% if 'sel_user' in config -%}
+    - sel_user: {{ config['sel_user'] }}
+    {%- endif %}
+    {% if 'sel_level' in config -%}
+    - sel_level: {{ config['sel_level'] }}
+    {%- endif %}
+    - require:
+      - pkg: selinux_pkg_installed
 {% endfor %}

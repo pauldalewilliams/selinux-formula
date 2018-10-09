@@ -12,7 +12,7 @@ NOTICE BEFORE YOU USE
 TODO
 ====
 
-* Add setroubleshoot support
+* Add setroubleshoot support - https://danwalsh.livejournal.com/20931.html
 
 Instructions
 ============

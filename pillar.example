@@ -1,25 +1,41 @@
 selinux:
   mode: enforcing
   type: targeted
+
   booleans_enabled:
     - httpd_can_network_connect_db
+    
   booleans_disabled:
     - httpd_can_network_connect
+
   ports:
     ssh:
       tcp:
         - 2224
+
   ports.absent:
     ssh:
       tcp:
         - 2223
+
   fcontext:
+    # filespec of the file or directory.  Regex syntax is allowed.
     /var/www/test.org/statics(/.*)?:
-      user: system_u
-      type: httpd_sys_rw_content_t
+      # sel_type is required - SELinux context type
+      sel_type: httpd_sys_rw_content_t
+      # filetype, sel_user, and sel_level are optional - filetype defaults to 'a'
+      filetype: a
+      sel_user: system_u
+      sel_level: s0
+
+  fcontext_applied:
+    /var/www/test.org/statics:
+      recursive: True  # optional, defaults to False
+
   fcontext_absent:
     - /var/www/test.org/src(/.*)?
     - /var/www/test.org/tests
+
   modules:
     gitlabsshkeygen:
       version: 1.0
