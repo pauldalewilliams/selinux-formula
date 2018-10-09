@@ -16,7 +16,7 @@ selinux_fcontext_{{ file }}:
       - pkg: selinux
 {% endfor %}
 
-{% for file in salt['pillar.get']('selinux:fcontext.absent', {}) %}
+{% for file in salt['pillar.get']('selinux:fcontext_absent', {}) %}
 selinux_fcontext_{{ file }}_absent:
   cmd:
     - run
