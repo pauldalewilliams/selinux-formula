@@ -9,7 +9,7 @@ selinux-config:
     - source: salt://selinux/files/config
     - template: jinja
 
-selinux-state:
+selinux-mode:
     cmd.run:
-        - name: setenforce {{ selinux.state|default('enforcing') }}
-        - unless: if [ "$(sestatus | awk '/Current mode/ { print $3 }')" = {{ selinux.state|default('enforcing') }} ]; then /bin/true; else /bin/false; fi
+        - name: setenforce {{ selinux.mode|default('enforcing') }}
+        - unless: if [ "$(sestatus | awk '/Current mode/ { print $3 }')" = {{ selinux.mode|default('enforcing') }} ]; then /bin/true; else /bin/false; fi
