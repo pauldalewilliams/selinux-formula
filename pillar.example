@@ -4,7 +4,7 @@ selinux:
 
   booleans_enabled:
     - httpd_can_network_connect_db
-    
+
   booleans_disabled:
     - httpd_can_network_connect
 
@@ -13,7 +13,7 @@ selinux:
       tcp:
         - 2224
 
-  ports.absent:
+  ports_absent:
     ssh:
       tcp:
         - 2223

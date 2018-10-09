@@ -13,7 +13,7 @@ resetifmissing_{{ k }}:
     - run
     - name: rm -f /etc/selinux/src/{{ v_name }}.te
     - require:
-      - pkg: selinux
+      - pkg: selinux_pkg_installed
     - unless: if [ "$(semodule -l | awk '{ print $1 }' | grep {{ v_name }} )" == "{{ v_name }}" ]; then /bin/true; else /bin/false; fi
 
 policy_{{ k }}:
@@ -34,7 +34,7 @@ checkmodule_{{ k }}:
       - file: /etc/selinux/src/{{ v_name }}.te
     - require:
       - file: /etc/selinux/src/{{ v_name }}.te
-      - pkg: selinux
+      - pkg: selinux_pkg_installed
     - unless: if [ "$(semodule -l | awk '{ print $1 }' | grep {{ v_name }} )" == "{{ v_name }}" ]; then /bin/true; else /bin/false; fi
 
 create_package_{{ k }}:
