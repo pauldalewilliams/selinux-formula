@@ -33,8 +33,13 @@ selinux:
       recursive: True  # optional, defaults to False
 
   fcontext_absent:
-    - /var/www/test.org/src(/.*)?
-    - /var/www/test.org/tests
+    /var/www/test.org/src(/.*)?:
+      # any config is optional but you can use it to target specific policies
+      filetype: a
+      sel_type: httpd_sys_rw_content_t
+      sel_user: system_u
+      sel_level: s0
+    /var/www/test.org/tests:
 
   modules:
     gitlabsshkeygen:
