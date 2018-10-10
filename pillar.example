@@ -43,7 +43,6 @@ selinux:
 
   modules:
     gitlabsshkeygen:
-      version: 1.0
       plain: |
         module gitlabsshkeygen 1.0;
 
@@ -57,7 +56,6 @@ selinux:
         allow ssh_keygen_t init_tmp_t:file open;
 
     gitlabnginx:
-      version: 1.0
       plain: |
         module gitlabnginx 1.0;
 
@@ -86,3 +84,9 @@ selinux:
         #!!!! This avc can be allowed using the boolean 'httpd_read_user_content'
         allow httpd_t user_home_t:file { read open };
         allow httpd_t user_home_t:sock_file write;
+
+  modules_disabled:
+    - gitlabapache
+  
+  modules_removed:
+    - gitlabjava

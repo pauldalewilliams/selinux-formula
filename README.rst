@@ -12,7 +12,6 @@ NOTICE BEFORE YOU USE
 TODO
 ====
 
-* Refine modules state
 * Add setroubleshoot support - https://danwalsh.livejournal.com/20931.html
 
 Instructions
