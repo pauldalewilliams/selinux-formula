@@ -5,3 +5,4 @@ include:
   - selinux.ports
   - selinux.fcontext
   - selinux.modules
+  - selinux.setroubleshoot
