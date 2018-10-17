@@ -21,7 +21,7 @@ selinux_fcontext_{{ file }}:
 selinux_fcontext_applied_{{ file }}:
   selinux.fcontext_policy_applied:
     - name: {{ file }}
-    {% if 'recursive' in config -%}
+    {% if 'recursive' in salt['pillar.get']('selinux:fcontext_applied:{{ file }}', []) -%}
     - recursive: {{ config['recursive'] }}
     {%- endif %}
     - require:
