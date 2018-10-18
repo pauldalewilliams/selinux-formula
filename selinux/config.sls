@@ -1,4 +1,4 @@
-{% set selinux  = pillar.get('selinux', {}) -%}
+{% set selinux  = salt['pillar.get']('selinux', {}) -%}
 
 selinux-config:
   file.managed:

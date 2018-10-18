@@ -1,4 +1,6 @@
-{% if salt['pillar.get']('selinux:setroubleshoot:installed', False) %}
+{% set setroubleshoot = salt['pillar.get']('selinux:setroubleshoot', {}) -%}
+
+{% if setroubleshoot.get('installed', False) %}
 setroubleshoot_pkg_installed:
   pkg.installed:
     - pkgs:
@@ -6,7 +8,7 @@ setroubleshoot_pkg_installed:
       - setroubleshoot-plugins
 {% endif %}
 
-{% for email in salt['pillar.get']('selinux:setroubleshoot:email_alerts_enabled', {}) %}
+{% for email in setroubleshoot.get('email_alerts_enabled', []) %}
 setroubleshoot_email_enabled_{{ email }}:
   file.line:
     - name: /var/lib/setroubleshoot/email_alert_recipients
@@ -14,7 +16,7 @@ setroubleshoot_email_enabled_{{ email }}:
     - content: {{ email }}
 {% endfor %}
 
-{% for bool in salt['pillar.get']('selinux:setroubleshoot:email_alerts_disabled', {}) %}
+{% for bool in setroubleshoot.get('email_alerts_disabled', []) %}
 setroubleshoot_email_disabled_{{ email }}:
   file.line:
     - name: /var/lib/setroubleshoot/email_alert_recipients

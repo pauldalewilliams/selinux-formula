@@ -1,4 +1,7 @@
-{% for file, config in salt['pillar.get']('selinux:fcontext', {}).items() %}
+{% set selinux  = salt['pillar.get']('selinux', {}) -%}
+
+{% for file, config in selinux.get('fcontext', {}).items() %}
+{% set config = config|default([], true) %}
 selinux_fcontext_{{ file }}:
   selinux.fcontext_policy_present:
     - name: {{ file }}
@@ -12,24 +15,22 @@ selinux_fcontext_{{ file }}:
     {% if 'sel_level' in config -%}
     - sel_level: {{ config['sel_level'] }}
     {%- endif %}
-    - require:
-      - pkg: selinux_pkg_installed
 {% endfor %}
 
 
-{% for file, config in salt['pillar.get']('selinux:fcontext_applied', {}).items() %}
+{% for file, config in selinux.get('fcontext_applied', {}).items() %}
+{% set config = config|default([], true) %}
 selinux_fcontext_applied_{{ file }}:
   selinux.fcontext_policy_applied:
     - name: {{ file }}
-    {% if 'recursive' in salt['pillar.get']('selinux:fcontext_applied:{{ file }}', []) -%}
+    {% if 'recursive' in config -%}
     - recursive: {{ config['recursive'] }}
     {%- endif %}
-    - require:
-      - pkg: selinux_pkg_installed
 {% endfor %}
 
 
-{% for file, config in salt['pillar.get']('selinux:fcontext_absent', {}).items() %}
+{% for file, config in selinux.get('fcontext_absent', {}).items() %}
+{% set config = config|default([], true) %}
 selinux_fcontext_{{ file }}_absent:
   selinux.fcontext_policy_absent:
     - name: {{ file }}
@@ -45,6 +46,4 @@ selinux_fcontext_{{ file }}_absent:
     {% if 'sel_level' in config -%}
     - sel_level: {{ config['sel_level'] }}
     {%- endif %}
-    - require:
-      - pkg: selinux_pkg_installed
 {% endfor %}

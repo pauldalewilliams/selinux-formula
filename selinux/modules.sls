@@ -1,4 +1,4 @@
-{% set selinux  = pillar.get('selinux', {}) -%}
+{% set selinux  = salt['pillar.get']('selinux', {}) -%}
 
 /etc/selinux/src:
   file.directory:
@@ -6,7 +6,7 @@
     - group: root
 
 
-{% for k, v in salt['pillar.get']('selinux:modules', {}).items() %}
+{% for k, v in selinux.get('modules', {}).items() %}
   {% set v_name = v.name|default(k) %}
 
 resetifmissing_{{ k }}:
@@ -51,7 +51,7 @@ manage_semodule_{{ k }}:
 {% endfor %}
 
 
-{% for module_name in salt['pillar.get']('selinux:modules_disabled', {}) %}
+{% for module_name in selinux.get('modules_disabled', {}) %}
 selinux_module_{{ module_name }}_disabled:
   selinux.module:
     - name: {{ module_name }}
@@ -59,7 +59,7 @@ selinux_module_{{ module_name }}_disabled:
 {% endfor %}
 
 
-{% for module_name in salt['pillar.get']('selinux:modules_removed', {}) %}
+{% for module_name in selinux.get('modules_removed', {}) %}
 selinux_module_{{ module_name }}_removed:
   selinux.module:
     - name: {{ module_name }}
