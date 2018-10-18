@@ -36,17 +36,22 @@ create_package_{{ k }}:
     - onchanges:
       - cmd: checkmodule_{{ k }}
 
+install_module_{{ k }}:
+  selinux.module_install:
+    - name: /etc/selinux/src/{{ v_name }}.pp
+    - onchanges:
+      - cmd: create_package_{{ k }}
+
 manage_semodule_{{ k }}:
   selinux.module:
     - name: {{ v_name }}
     - module_state: enabled
-    - install: True
-    - source: /etc/selinux/src/{{ v_name }}.pp
     - require:
       - cmd: resetifmissing_{{ k }}
       - file: /etc/selinux/src/{{ v_name }}.te
       - cmd: checkmodule_{{ k }}
       - cmd: create_package_{{ k }}
+      - selinux: install_module_{{ k }}
 
 {% endfor %}
 
