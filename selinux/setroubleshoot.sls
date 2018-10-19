@@ -13,6 +13,7 @@ setroubleshoot_email_enabled_{{ email }}:
   file.line:
     - name: /var/lib/setroubleshoot/email_alert_recipients
     - mode: ensure
+    - location: end
     - content: {{ email }}
     - create: true
 {% endfor %}
