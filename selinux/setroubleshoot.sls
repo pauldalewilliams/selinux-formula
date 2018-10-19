@@ -16,7 +16,7 @@ setroubleshoot_email_enabled_{{ email }}:
     - content: {{ email }}
 {% endfor %}
 
-{% for bool in setroubleshoot.get('email_alerts_disabled', []) %}
+{% for email in setroubleshoot.get('email_alerts_disabled', []) %}
 setroubleshoot_email_disabled_{{ email }}:
   file.line:
     - name: /var/lib/setroubleshoot/email_alert_recipients
