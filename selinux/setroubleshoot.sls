@@ -6,16 +6,17 @@ setroubleshoot_pkg_installed:
     - pkgs:
       - setroubleshoot-server
       - setroubleshoot-plugins
+
+setroubleshoot_email_alert_recipients_exists:
+  file.managed:
+    - name: /var/lib/setroubleshoot/email_alert_recipients
 {% endif %}
 
 {% for email in setroubleshoot.get('email_alerts_enabled', []) %}
 setroubleshoot_email_enabled_{{ email }}:
-  file.line:
+  file.append:
     - name: /var/lib/setroubleshoot/email_alert_recipients
-    - mode: ensure
-    - location: end
-    - content: {{ email }}
-    - create: true
+    - text: {{ email }}
 {% endfor %}
 
 {% for email in setroubleshoot.get('email_alerts_disabled', []) %}
@@ -24,5 +25,4 @@ setroubleshoot_email_disabled_{{ email }}:
     - name: /var/lib/setroubleshoot/email_alert_recipients
     - mode: delete
     - content: {{ email }}
-    - create: true
 {% endfor %}
