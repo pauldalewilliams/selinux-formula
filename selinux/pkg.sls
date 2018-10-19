@@ -8,4 +8,3 @@ selinux_pkgs_installed:
       - selinux-policy-targeted
       - policycoreutils
       - policycoreutils-python
-    - reload_modules: true
