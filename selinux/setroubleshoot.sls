@@ -14,6 +14,7 @@ setroubleshoot_email_enabled_{{ email }}:
     - name: /var/lib/setroubleshoot/email_alert_recipients
     - mode: ensure
     - content: {{ email }}
+    - create: true
 {% endfor %}
 
 {% for email in setroubleshoot.get('email_alerts_disabled', []) %}
@@ -22,4 +23,5 @@ setroubleshoot_email_disabled_{{ email }}:
     - name: /var/lib/setroubleshoot/email_alert_recipients
     - mode: delete
     - content: {{ email }}
+    - create: true
 {% endfor %}
