@@ -1,0 +1,6 @@
+py
+pytest
+testinfra
+six>=1.10.0
+paramiko
+pyyaml

@@ -1,0 +1,47 @@
+driver:
+  name: vagrant
+
+transport:
+  name: sftp
+
+provisioner:
+  name: salt_solo
+  salt_install: bootstrap
+  salt_version: latest
+  salt_bootstrap_url: https://bootstrap.saltstack.com
+  is_file_root: true
+  require_chef: false
+  salt_copy_filter:
+    - Dockerfile
+    - .git
+    - .gitignore
+    - .kitchen
+    - .kitchen.yml
+    - Gemfile
+    - Gemfile.lock
+    - requirements.txt
+    - tests
+    - .travis.yml
+  state_top:
+    base:
+      "*":
+        - selinux
+  pillars:
+    top.sls:
+      base:
+        "*":
+          - selinux
+  pillars_from_files:
+    selinux.sls: pillar.example
+
+platforms:
+  - name: centos/6
+  - name: centos/7
+
+suites:
+  - name: default
+
+verifier:
+  name: shell
+  remote_exec: false
+  command: py.test -vvv --ssh-config=test/ssh_config --hosts="paramiko://${KITCHEN_USERNAME}@${KITCHEN_HOSTNAME}:${KITCHEN_PORT}?ssh_identity_file=${KITCHEN_SSH_KEY}" --junit-xml junit-$KITCHEN_INSTANCE.xml test/integration/$KITCHEN_SUITE

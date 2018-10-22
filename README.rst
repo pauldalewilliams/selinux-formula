@@ -2,7 +2,7 @@
 selinux-formula
 ===========
 
-Salt Stack Formula to set up and configure selinux, Security-Enhanced Linux
+Salt Stack Formula to set up and configure SELinux, Security-Enhanced Linux
 
 NOTICE BEFORE YOU USE
 =====================
@@ -31,7 +31,35 @@ Available states
 
 ``selinux``
 -------
-Manage selinux
+Manage SELinux - includes all of the states listed below
+
+``selinux.pkg``
+-------
+Install SELinux packages
+
+``selinux.config``
+-------
+Manage SELinux config
+
+``selinux.booleans``
+-------
+Manage SELinux booleans
+
+``selinux.ports``
+-------
+Manage SELinux ports
+
+``selinux.fcontext``
+-------
+Manage SELinux file contexts
+
+``selinux.modules``
+-------
+Manage SELinux modules
+
+``selinux.setroubleshoot``
+-------
+Manage setroubleshoot (install, configure email alerts)
 
 Additional resources
 ====================
@@ -50,7 +78,7 @@ Contributions are always welcome. All development guidelines you have to know ar
 
 * write clean code (proper YAML+Jinja syntax, no trailing whitespaces, no empty lines with whitespaces, LF only)
 * set sane default settings
-* test your code
+* test your code (see Testing below)
 * update README.rst doc
 
 Salt Compatibility
@@ -65,4 +93,26 @@ OS Compatibility
 
 Tested with:
 
+* CentOS 6
 * CentOS 7
+
+Testing
+=======
+
+Testing is done with `Test Kitchen <http://kitchen.ci/>`_
+for machine setup and `testinfra <https://testinfra.readthedocs.io/en/latest/>`_
+for integration tests.
+
+Requirements
+------------
+
+* Python & modules in requirements.txt
+* Ruby
+* Vagrant
+
+::
+
+    gem install bundler
+    bundle install
+    pip install -r requirements.txt
+    kitchen test

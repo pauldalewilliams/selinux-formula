@@ -10,90 +10,95 @@ selinux:
       - nomail@example.com
 
   booleans_enabled:
-    - httpd_can_network_connect_db
+    - httpd_can_sendmail
 
   booleans_disabled:
-    - httpd_can_network_connect
+    - httpd_enable_cgi
 
   ports:
-    ssh:
+    http:
       tcp:
-        - 2224
+        - 8088
 
   ports_absent:
-    ssh:
+    http:
       tcp:
-        - 2223
+        - 78
 
   fcontext:
     # filespec of the file or directory.  Regex syntax is allowed.
-    /var/www/test.org/statics(/.*)?:
+    /var/games(/.*)?:
       # sel_type is required - SELinux context type
-      sel_type: httpd_sys_rw_content_t
+      sel_type: games_data_t
       # filetype, sel_user, and sel_level are optional - filetype defaults to 'a'
-      filetype: a
-      sel_user: system_u
-      sel_level: s0
+      # filetype: a
+      # sel_user: system_u
+      # sel_level: s0
+    /var/www/html/example(/.*)?:
+      sel_type: httpd_sys_rw_content_t
+    /var/www/html/test/example:
+      sel_type: httpd_sys_rw_content_t
 
   fcontext_applied:
-    /var/www/test.org/statics:
+    /var/games:
       recursive: True  # optional, defaults to False
+    /opt:
 
   fcontext_absent:
-    /var/www/test.org/src(/.*)?:
+    /var/www/html/example(/.*)?:
       # any config is optional but you can use it to target specific policies
-      filetype: a
-      sel_type: httpd_sys_rw_content_t
-      sel_user: system_u
-      sel_level: s0
-    /var/www/test.org/tests:
+      # filetype: a
+      # sel_type: httpd_sys_rw_content_t
+      # sel_user: system_u
+      # sel_level: s0
+    /var/www/html/test/example:
 
   modules:
-    gitlabsshkeygen:
+    zabbix_agent:
       plain: |
-        module gitlabsshkeygen 1.0;
+          module zabbix_agent 1.0;
 
-        require {
-    	type ssh_keygen_t;
-    	type init_tmp_t;
-    	class file { read open };
-        }
+          require {
+                  type zabbix_agent_t;
+                  class process setrlimit;
+          }
 
-        #============= ssh_keygen_t ==============
-        allow ssh_keygen_t init_tmp_t:file open;
+          #============= zabbix_agent_t ==============
+          allow zabbix_agent_t self:process setrlimit;
 
-    gitlabnginx:
+    zabbix_server:
       plain: |
-        module gitlabnginx 1.0;
+          module zabbix_server 1.0;
 
-        require {
-    	type httpd_t;
-    	type user_home_t;
-    	type init_t;
-    	type user_home_dir_t;
-    	class sock_file write;
-    	class unix_stream_socket connectto;
-    	class file { read open };
-    	class dir { search getattr };
-        }
+          require {
+                  type zabbix_t;
+                  class process setrlimit;
+          }
 
-        #============= httpd_t ==============
-        allow httpd_t init_t:unix_stream_socket connectto;
+          #============= zabbix_t ==============
+          allow zabbix_t self:process setrlimit;
+    
+    zabbix_server_34:
+      plain: |
+          module zabbix_server_34 1.1;
 
-        #!!!! This avc can be allowed using one of the these booleans:
-        #     httpd_read_user_content, httpd_enable_homedirs
-        allow httpd_t user_home_dir_t:dir search;
+          require {
+                  type zabbix_var_run_t;
+                  type tmp_t;
+                  type zabbix_t;
+                  class sock_file { create unlink write };
+                  class unix_stream_socket connectto;
+                  class process setrlimit;
+          }
 
-        #!!!! This avc can be allowed using one of the these booleans:
-        #     httpd_read_user_content, httpd_enable_homedirs
-        allow httpd_t user_home_t:dir { search getattr };
-
-        #!!!! This avc can be allowed using the boolean 'httpd_read_user_content'
-        allow httpd_t user_home_t:file { read open };
-        allow httpd_t user_home_t:sock_file write;
+          #============= zabbix_t ==============
+          allow zabbix_t self:process setrlimit;
+          allow zabbix_t self:unix_stream_socket connectto;
+          allow zabbix_t tmp_t:sock_file { create unlink write };
+          allow zabbix_t zabbix_var_run_t:sock_file { create unlink write };
 
   modules_disabled:
-    - gitlabapache
+    - zabbix_server
   
   modules_removed:
-    - gitlabjava
+    - zabbix_server_34
