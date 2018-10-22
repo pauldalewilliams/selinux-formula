@@ -108,7 +108,7 @@ Requirements
 
 * Python & modules in requirements.txt
 * Ruby
-* Vagrant
+* Vagrant - required since SELinux doesn't work inside Docker containers, open to suggestions
 
 ::
 
