@@ -12,6 +12,7 @@ NOTICE BEFORE YOU USE
 TODO
 ====
 
+* Set up map.jinja to handle defaults and make the formula modular
 * Break out setroubleshoot into its own formula
 
 Instructions
