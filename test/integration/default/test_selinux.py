@@ -54,3 +54,9 @@ def test_selinux_modules(host):
         host.run_expect([0], 'semodule -l | grep zabbix_agent')
         host.run_expect([0], 'semodule -l | grep zabbix_server | grep Disabled || semodule -lfull | grep zabbix_server | grep disabled')
         host.run_expect([1], 'semodule -l | grep zabbix_server_34')        
+
+def test_selinux_fcontext(host):
+    with host.sudo():
+        host.run_expect([0], "semanage fcontext -l | grep -F '/var/games(/.*)?' | grep games_data_t")
+        host.run_expect([1], "semanage fcontext -l | grep -F '/var/www/html/example(/.*)?'")
+        host.run_expect([1], "semanage fcontext -l | grep -F '/var/www/html/test/example'")
